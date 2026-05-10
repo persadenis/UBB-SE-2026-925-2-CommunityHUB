@@ -2,7 +2,6 @@ using matchmaking.Domain;
 using matchmaking.ViewModels;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using System;
 using System.ComponentModel;
 
@@ -58,7 +57,7 @@ namespace matchmaking.Views
                 case Screen.ADMIN:
                     var adminViewModel = new AdminViewModel(
                         new Services.SupportTicketService(new Repositories.SupportTicketRepository(App.ConnectionString)),
-                        new Services.ProfileService(new Repositories.ProfileRepository(App.ConnectionString), new Utils.MockUserUtil()));
+                        new Services.ProfileService(new Repositories.ProfileRepository(App.ConnectionString)));
                     Frame.Navigate(typeof(AdminView), adminViewModel);
                     break;
                 case Screen.CREATE:

@@ -447,25 +447,12 @@ namespace matchmaking.Views
             {
                 ViewModel.DeleteProfileCommand.Execute(null);
 
-                Window window = (Application.Current as App)!._window!;
-                if (window.Content is Grid grid && grid.Children.Count > 0 && grid.Children[0] is Frame rootFrame)
-                {
-                    var profileRepo = new Repositories.ProfileRepository(App.ConnectionString);
-                    var adminRepo = new Repositories.DatingAdminRepository(App.ConnectionString);
-                    var mockUserUtil = new Utils.MockUserUtil();
+                var profileRepo = new Repositories.ProfileRepository(App.ConnectionString);
+                var profileService = new Services.ProfileService(profileRepo);
+                var createProfileViewModel = new ViewModels.CreateProfileViewModel(ViewModel._userId, profileService);
+                Frame targetFrame = Boards_WP.App.Current.CommunityContentFrame ?? Frame;
 
-                    var profileService = new Services.ProfileService(profileRepo, mockUserUtil);
-                    var adminService = new Services.DatingAdminService(adminRepo);
-
-                    var splashViewModel = new ViewModels.SplashViewModel(ViewModel._userId, mockUserUtil, profileService, adminService);
-                    var createProfileViewModel = new ViewModels.CreateProfileViewModel(ViewModel._userId, profileService, mockUserUtil);
-
-                    rootFrame.Navigate(typeof(SplashView));
-                    if (rootFrame.Content is SplashView splashView)
-                    {
-                        splashView.SetViewModel(splashViewModel, createProfileViewModel);
-                    }
-                }
+                targetFrame.Navigate(typeof(CreateProfileView), createProfileViewModel);
             }
         }
 

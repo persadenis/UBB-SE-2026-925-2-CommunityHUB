@@ -10,7 +10,6 @@ namespace matchmaking.ViewModels
     internal class CreateProfileViewModel : ObservableObject
     {
         private readonly ProfileService _profileService;
-        private readonly MockUserUtil _userUtil;
 
         private int _currentStep;
         private ProfileData? _profileData;
@@ -32,10 +31,9 @@ namespace matchmaking.ViewModels
         public event Action? ProfileCreated;
         public event Action<string>? ErrorOccurred;
 
-        public CreateProfileViewModel(int userId, ProfileService profileService, MockUserUtil userUtil)
+        public CreateProfileViewModel(int userId, ProfileService profileService)
         {
             _profileService = profileService;
-            _userUtil = userUtil;
 
             _currentStep = 1;
             _profileData = null;
@@ -49,6 +47,37 @@ namespace matchmaking.ViewModels
             PreviousPhotoCommand = new RelayCommand(PreviousPhoto, () => _profileData?.Photos.Count > 0);
             CreateProfileCommand = new RelayCommand(ExecuteCreateProfile, () => _termsAccepted);
             RemovePhotoCommand = new RelayCommand<int>(ExecuteRemovePhoto);
+        }
+
+        public DateTime BirthDate
+        {
+            get => _birthDate;
+            set
+            {
+                if (SetProperty(ref _birthDate, value))
+                {
+                    if (_profileData != null)
+                    {
+                        _profileData.DateOfBirth = value;
+                    }
+
+                    OnPropertyChanged(nameof(Age));
+                }
+            }
+        }
+
+        public int Age
+        {
+            get
+            {
+                int age = DateTime.Today.Year - _birthDate.Year;
+                if (_birthDate.Date > DateTime.Today.AddYears(-age))
+                {
+                    age--;
+                }
+
+                return age;
+            }
         }
 
         public string Name
@@ -227,8 +256,7 @@ namespace matchmaking.ViewModels
 
         public void LoadUserData(int userId)
         {
-            UserData userData = _userUtil.GetUserData(userId);
-            _birthDate = userData.Birthdate;
+            BirthDate = DateTime.Today.AddYears(-18);
 
             _profileData = new ProfileData(
                 string.Empty,
@@ -243,7 +271,8 @@ namespace matchmaking.ViewModels
                 false,
                 new List<Photo>(),
                 new List<string>(),
-                null
+                null,
+                BirthDate
             );
 
             OnPropertyChanged(nameof(ProfileData));

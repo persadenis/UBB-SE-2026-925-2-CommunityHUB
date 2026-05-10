@@ -9,7 +9,6 @@ namespace matchmaking.ViewModels
     internal class SplashViewModel : ObservableObject
     {
         private readonly int _userId;
-        private readonly MockUserUtil _mockUserUtil;
         private readonly ProfileService _profileService;
         private readonly DatingAdminService _datingAdminService;
 
@@ -22,10 +21,9 @@ namespace matchmaking.ViewModels
             private set => SetProperty(ref _nextScreen, value);
         }
 
-        public SplashViewModel(int userId, MockUserUtil mockUserUtil, ProfileService profileService, DatingAdminService datingAdminService)
+        public SplashViewModel(int userId, ProfileService profileService, DatingAdminService datingAdminService)
         {
             _userId = userId;
-            _mockUserUtil = mockUserUtil;
             _profileService = profileService;
             _datingAdminService = datingAdminService;
 
@@ -43,12 +41,16 @@ namespace matchmaking.ViewModels
 
         public bool IsUserAdult()
         {
-            UserData userData = _mockUserUtil.GetUserData(_userId);
+            DatingProfile profile = _profileService.GetProfileById(_userId);
+            if (profile == null)
+            {
+                return true;
+            }
 
             DateTime today = DateTime.Today;
-            int age = today.Year - userData.Birthdate.Year;
+            int age = today.Year - profile.DateOfBirth.Year;
 
-            if (userData.Birthdate.Date > today.AddYears(-age))
+            if (profile.DateOfBirth.Date > today.AddYears(-age))
                 age--;
 
             return age >= 18;
@@ -74,9 +76,9 @@ namespace matchmaking.ViewModels
 
         public Screen DecideNextScreen()
         {
-            if (!IsUserAdult()) return Screen.AGE_BLOCK;
             if (IsAdmin()) return Screen.ADMIN;
             if (!HasProfile()) return Screen.CREATE;
+            if (!IsUserAdult()) return Screen.AGE_BLOCK;
 
             return Screen.DISCOVER;
         }

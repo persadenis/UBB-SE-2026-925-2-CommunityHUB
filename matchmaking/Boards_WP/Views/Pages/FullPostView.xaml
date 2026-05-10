@@ -1,0 +1,225 @@
+<Page
+    x:Class="Boards_WP.Views.Pages.FullPostView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Boards_WP.Views.Pages"
+    xmlns:views="using:Boards_WP.Views"
+    xmlns:models="using:Boards_WP.Data.Models"
+    xmlns:helpers="using:Boards_WP.Helpers"
+    Background="Transparent">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,10,20">
+
+                <!-- Back Button -->
+                <Button Click="Back_Click" Background="#8D7FB3" BorderThickness="0" Margin="0,0,0,10" Padding="5">
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B5A6DE"/>
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#7A6CA0"/>
+                    </Button.Resources>
+
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE72B;" FontSize="16" />
+                        <TextBlock Text=" Back to Feed" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                    </StackPanel>
+                </Button>
+
+                <!-- Main Post Card -->
+                <Border Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,20" BorderBrush="#E0E0FF" BorderThickness="1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Left Column: Voting -->
+                        <StackPanel Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Center"
+                                    Background="#F8F8FF" CornerRadius="8" Padding="4" BorderBrush="#E0E0FF" BorderThickness="1">
+                            <Button Content="▲" Command="{x:Bind ViewModel.UpvoteCommand, Mode=OneWay}" Foreground="#6B588C"
+                                Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B09AD6"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#807099"/>
+                                </Button.Resources>
+                            </Button>
+
+                            <TextBlock Text="{x:Bind ViewModel.CurrentPost.Score, Mode=OneWay}" 
+                                HorizontalAlignment="Center" FontWeight="Bold" 
+                                Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
+
+                            <Button Content="▼" Command="{x:Bind ViewModel.DownvoteCommand, Mode=OneWay}"  Foreground="#6B588C"
+                                Background="Transparent" BorderThickness="0" HorizontalAlignment="Center">
+                                <Button.Resources>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#B09AD6"/>
+                                    <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#807099"/>
+                                </Button.Resources>
+                            </Button>
+
+                            <TextBlock Text="{x:Bind ViewModel.VoteStatusText, Mode=OneWay}"
+                                FontSize="10"
+                                Foreground="#6B588C"
+                                FontWeight="SemiBold"
+                                HorizontalAlignment="Center"
+                                TextWrapping="Wrap"
+                                TextAlignment="Center"
+                                Margin="0,5,0,0"/>
+                        </StackPanel>
+
+                        <!-- Middle Column: Content -->
+                        <StackPanel Grid.Column="1" Margin="15,0">
+                            <StackPanel Margin="0,0,0,8">
+                                <TextBlock Text="{x:Bind ViewModel.AuthorUsername, Mode=OneWay}" FontSize="12" Foreground="Gray" Margin="0,0,0,6"/>
+                                <ItemsControl ItemsSource="{x:Bind ViewModel.CurrentPostTags, Mode=OneWay}" Margin="0,0,0,6">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal" Spacing="8"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="models:Tag">
+                                            <Border CornerRadius="12" Padding="8,4" Background="{x:Bind helpers:ColorHelper.GetBrushForCategory(CategoryBelongingTo.CategoryID), Mode=OneWay}">
+                                                <TextBlock Text="{x:Bind TagName, Mode=OneWay}" FontSize="12" FontWeight="SemiBold" Foreground="White"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                            <TextBlock Text="{x:Bind ViewModel.CurrentPost.Title, Mode=OneWay}" FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                            <TextBlock Text="{x:Bind ViewModel.CurrentPost.Description, Mode=OneWay}" TextWrapping="Wrap" Foreground="#444" Margin="0,0,0,15"/>
+
+                            <Image Source="{x:Bind ViewModel.PostImageSource, Mode=OneWay}"
+                                   Visibility="{x:Bind ViewModel.PostImageVisibility, Mode=OneWay}"
+                                   MaxHeight="400" Stretch="Uniform" HorizontalAlignment="Stretch" Margin="0,0,0,10"/>
+
+                            <Grid Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Command="{x:Bind ViewModel.ShowCommentAreaCommand}" 
+                                        Visibility="{x:Bind BooleanToInverseVisibility(ViewModel.IsCommentAreaVisible), Mode=OneWay}"
+                                        Background="Transparent" BorderThickness="0"
+                                        HorizontalAlignment="Left">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <FontIcon Glyph="&#xE8BD;" FontSize="16" Foreground="#6A67E1"/>
+                                        <TextBlock Text="Write Comment" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#6A67E1"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="15" HorizontalAlignment="Right">
+                                    <Button Command="{x:Bind ViewModel.DeletePostCommand}" 
+                                            Visibility="{x:Bind BooleanToVisibility(ViewModel.CanDeletePost), Mode=OneWay}"
+                                            Background="Transparent" BorderThickness="0">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="Red"/>
+                                            <TextBlock Text="delete" FontSize="12" Foreground="Red"/>
+                                        </StackPanel>
+                                    </Button>
+
+                                    <Button Command="{x:Bind ViewModel.ToggleShareAreaCommand}" Background="Transparent" BorderThickness="0">
+                                        <StackPanel Orientation="Horizontal" Spacing="5">
+                                            <FontIcon Glyph="&#xE72D;" FontSize="14" Foreground="#6A67E1"/>
+                                            <TextBlock Text="share" FontSize="12" Foreground="#6A67E1"/>
+                                        </StackPanel>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Right Column: Comment Count -->
+                        <StackPanel Grid.Column="2" VerticalAlignment="Top" HorizontalAlignment="Center">
+                        <Border BorderBrush="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" BorderThickness="1" CornerRadius="5" Padding="5">
+                            <StackPanel>
+                                <FontIcon Glyph="&#xE8BD;" FontSize="18" Foreground="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}"/>
+                                <TextBlock Text="{x:Bind ViewModel.CurrentPost.CommentsNumber, Mode=OneWay}"
+                                           HorizontalAlignment="Center" FontSize="10"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    </Grid>
+                </Border>
+
+                <!-- Share Area -->
+                <Border Background="White" CornerRadius="12" Margin="0,0,0,20" Padding="6" 
+                    BorderBrush="#6A67E1" BorderThickness="2"
+                    Visibility="{x:Bind BooleanToVisibility(ViewModel.IsShareAreaVisible), Mode=OneWay}">
+                    <Grid ColumnDefinitions="*, Auto" ColumnSpacing="10">
+
+                        <ComboBox Grid.Column="0"
+                            ItemsSource="{x:Bind ViewModel.HardcodedChats}"
+                            SelectedItem="{x:Bind ViewModel.SelectedChatName, Mode=TwoWay}"
+                            PlaceholderText="Select a chat..." 
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Background="Gray"
+                            BorderThickness="0"
+                            Margin="10,0,0,0">
+                            <ComboBox.Resources>
+                                <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="#4D4D4D" />
+                                <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="#383838" />
+                                <SolidColorBrush x:Key="ComboBoxBackgroundFocused" Color="Gray" />
+                            </ComboBox.Resources>
+                        </ComboBox>
+
+                        <Button Grid.Column="1" 
+                            Content="Send" 
+                            Command="{x:Bind ViewModel.SendShareCommand}"
+                            Background="#6A67E1" 
+                            Foreground="White" 
+                            CornerRadius="8" 
+                            Width="80" 
+                            Height="36"
+                            VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- Write Comment Area -->
+                <Border Background="{x:Bind ViewModel.MainViewModel.VividThemeBrush, Mode=OneWay}" 
+                    CornerRadius="20" Margin="0,0,0,20" Padding="15" 
+                    Visibility="{x:Bind BooleanToVisibility(ViewModel.IsCommentAreaVisible), Mode=OneWay}">
+                    <Grid ColumnDefinitions="*, Auto">
+                        <!-- Textbox with matching resources from Search Communities -->
+                        <TextBox x:Name="CommentInput" PlaceholderText="Write a comment...." 
+                            Text="{x:Bind ViewModel.NewCommentText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            AcceptsReturn="True" TextWrapping="Wrap" BorderThickness="0" MinHeight="60"
+                            Background="Transparent"
+                            Foreground="White">
+
+                            <TextBox.Resources>
+                                <!-- Match background hover/focus colors of Header Search -->
+                                <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="#5F5870"/>
+                                <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="#5F5870"/>
+                                <!-- Increase visibility for placeholder and text -->
+                                <SolidColorBrush x:Key="TextControlPlaceholderTextForeground" Color="#E0E0E0"/>
+                                <SolidColorBrush x:Key="TextControlForeground" Color="White" />
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Orientation="Horizontal" Spacing="10" Margin="10,0,0,0">
+                            <Button Content="Cancel" Foreground="White" Command="{x:Bind ViewModel.CancelCommentCommand}" Background="#E53935" CornerRadius="8"/>
+                            <Button Content="Post Comment" 
+                                Command="{x:Bind ViewModel.PostCommentCommand}"
+                                Background="White" 
+                                Foreground="#6A67E1" 
+                                CornerRadius="8" />
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Comments List -->
+                <ItemsControl ItemsSource="{x:Bind ViewModel.PostComments, Mode=OneWay}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="models:Comment">
+                            <views:CommentView CommentData="{x:Bind}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

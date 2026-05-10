@@ -10,9 +10,17 @@ namespace matchmaking.Utils
     internal class CompatibilityUtil
     {
         private readonly LocationUtil _locationUtil = new LocationUtil();
-        private readonly MockCommunityUtil _communityUtil = new MockCommunityUtil();
+        private readonly ICommunityLookup _communityUtil;
 
-        public CompatibilityUtil() { }
+        public CompatibilityUtil()
+            : this(new MockCommunityUtil())
+        {
+        }
+
+        public CompatibilityUtil(ICommunityLookup communityUtil)
+        {
+            _communityUtil = communityUtil;
+        }
 
         public float CalculateCompatibility(DatingProfile profile1, DatingProfile profile2)
         {

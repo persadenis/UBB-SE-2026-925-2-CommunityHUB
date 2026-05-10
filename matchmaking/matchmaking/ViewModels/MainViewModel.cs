@@ -76,13 +76,12 @@ namespace matchmaking.ViewModels
             var photoRepo = new PhotoRepository(connectionString);
             var bidRepo = new BidRepository(connectionString);
 
-            var mockUserUtil = new MockUserUtil();
-            var communityUtil = new MockCommunityUtil();
-            var compatibilityUtil = new CompatibilityUtil();
+            var communityUtil = new DatabaseCommunityUtil();
+            var compatibilityUtil = new CompatibilityUtil(communityUtil);
             var questionaireUtil = new QuestionaireUtil();
             var interestUtil = new InterestUtil();
 
-            var profileService = new ProfileService(profileRepo, mockUserUtil);
+            var profileService = new ProfileService(profileRepo);
             var interactionService = new InteractionService(interactionRepo);
             var matchService = new MatchService(matchRepo);
             _notificationService = new NotificationService(notificationRepo);

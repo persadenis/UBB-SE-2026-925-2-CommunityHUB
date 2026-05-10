@@ -1,0 +1,74 @@
+<UserControl
+    x:Class="Boards_WP.Views.CommunityBarView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="using:Boards_WP.Data.Models"
+    xmlns:helpers="using:Boards_WP.Helpers"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <CornerRadius x:Key="ControlCornerRadius">10</CornerRadius>
+        <CornerRadius x:Key="ListViewItemSelectedCornerRadius">10</CornerRadius>
+        <SolidColorBrush x:Key="ListViewItemBackgroundPointerOver" Color="{x:Bind ViewModel.MainViewModel.VividThemeColor, Mode=OneWay}" />
+        <SolidColorBrush x:Key="ListViewItemBackgroundSelected" Color="{x:Bind ViewModel.MainViewModel.VividThemeColor, Mode=OneWay}" />
+        <SolidColorBrush x:Key="ListViewItemForegroundPointerOver" Color="White" />
+        <SolidColorBrush x:Key="ListViewItemForegroundSelected" Color="White" />
+
+        <Style x:Key="NavigationListViewStyle" TargetType="ListViewItem">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Resources>
+
+
+
+    <Border Background="{x:Bind ViewModel.MainViewModel.MidThemeBrush, Mode=OneWay}" CornerRadius="15" Margin="4">
+        <StackPanel Padding="10,20">
+            
+            <ListView SelectionMode="Single" ItemContainerStyle="{StaticResource NavigationListViewStyle}">
+    
+                <ListViewItem x:Name="HomeItem" Tapped="HomeNavigation_Tapped">
+                    <TextBlock Text="Home" Foreground="White" FontSize="18" FontWeight="SemiBold" />
+                </ListViewItem>
+    
+                <ListViewItem x:Name="DiscoveryItem" Tapped="DiscoverNavigation_Tapped">
+                    <TextBlock Text="Discovery" Foreground="White" FontSize="18" FontWeight="SemiBold" />
+                </ListViewItem>
+    
+                <ListViewItem x:Name="StartCommunityItem" Tapped="StartCommunity_Tapped">
+                    <TextBlock Text="Start Community" Foreground="White" FontSize="18" FontWeight="SemiBold" />
+                </ListViewItem>
+    
+            </ListView>
+
+            <TextBlock Text="MY COMMUNITIES" 
+                       Foreground="#FFFFFF" 
+                       FontSize="11" 
+                       FontWeight="Bold" 
+                       Margin="12,20,0,10" />
+
+            <ListView 
+                x:Name="CommunityListView"
+                ItemsSource="{x:Bind ViewModel.Communities}"
+                IsItemClickEnabled="True" 
+                ItemClick="CommunityListView_ItemClick">
+    
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="models:Community">
+                        <StackPanel Orientation="Horizontal" Spacing="10" Margin="5">
+                            <PersonPicture ProfilePicture="{x:Bind helpers:ImageHelper.ConvertToBitmap(Picture), Mode=OneWay}"
+                                           DisplayName="{x:Bind Name}" 
+                                           Height="32" Width="32" />
+                            <TextBlock Text="{x:Bind Name}" Margin="0,0" Foreground="White" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+    </Border>
+</UserControl>

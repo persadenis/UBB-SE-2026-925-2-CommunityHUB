@@ -4,7 +4,12 @@ using System.Text;
 
 namespace matchmaking.Utils
 {
-    internal class MockCommunityUtil
+    internal interface ICommunityLookup
+    {
+        List<string> GetSharedCommunities(int userId1, int userId2);
+    }
+
+    internal class MockCommunityUtil : ICommunityLookup
     {
         private Dictionary<int, List<string>> userCommunities = new Dictionary<int, List<string>>
         {

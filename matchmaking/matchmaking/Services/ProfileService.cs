@@ -11,11 +11,9 @@ namespace matchmaking.Services
     internal class ProfileService
     {
         private ProfileRepository ProfileRepo;
-        private MockUserUtil UserUtil;
 
-        public ProfileService(ProfileRepository repo,MockUserUtil userUtil) {
+        public ProfileService(ProfileRepository repo) {
             ProfileRepo = repo;
-            UserUtil = userUtil;
         }
         private int CalculateAge(DateTime dateOfBirth)
         {
@@ -58,8 +56,11 @@ namespace matchmaking.Services
 
         public DatingProfile CreateProfile(int Id,ProfileData profileData)
         {
-            UserData userData = UserUtil.GetUserData(Id);
-            int age = CalculateAge(userData.Birthdate);
+            int age = CalculateAge(profileData.DateOfBirth);
+            if (age < 18)
+            {
+                throw new InvalidOperationException("You must be 18 or older to create a dating profile.");
+            }
 
             CopyPhotosToStorage(profileData.Photos);
 
@@ -79,7 +80,7 @@ namespace matchmaking.Services
                 false,
                 profileData.Photos,
                 profileData.Interests,
-                userData.Birthdate,
+                profileData.DateOfBirth,
                 profileData.LoverType,
                 false,
                 false,

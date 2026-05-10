@@ -23,8 +23,9 @@ namespace matchmaking.Domain
         public List<Photo> Photos { get; set; }
         public List<String> Interests { get; set; }
         public LoverType? LoverType { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
-        public ProfileData(string name,Gender gender, List<Gender> preferredGenders, string location,string nationality, int maxDistance, int minPreferredAge, int maxPreferredAge, string bio, bool displayStarSign, List<Photo> photos, List<string> interests, LoverType? loverType)
+        public ProfileData(string name,Gender gender, List<Gender> preferredGenders, string location,string nationality, int maxDistance, int minPreferredAge, int maxPreferredAge, string bio, bool displayStarSign, List<Photo> photos, List<string> interests, LoverType? loverType, DateTime dateOfBirth = default)
         {
             Name= name;
             Gender = gender;
@@ -39,6 +40,7 @@ namespace matchmaking.Domain
             Photos = photos;
             Interests = interests;
             LoverType = loverType;
+            DateOfBirth = dateOfBirth == default ? DateTime.Today.AddYears(-18) : dateOfBirth;
 
         }
     }

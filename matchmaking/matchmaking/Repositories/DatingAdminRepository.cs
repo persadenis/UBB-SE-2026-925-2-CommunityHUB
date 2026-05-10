@@ -1,6 +1,5 @@
 ﻿using matchmaking.Domain;
 using Microsoft.Data.SqlClient;
-using Microsoft.WindowsAppSDK.Runtime.Packages;
 using System;
 using System.Collections.Generic;
 using System.Linq;

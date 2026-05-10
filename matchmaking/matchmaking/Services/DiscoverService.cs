@@ -14,10 +14,10 @@ namespace matchmaking.Services
     {
         private ProfileRepository ProfileRepo;
         private InteractionRepository InteractionRepo;
-        private MockCommunityUtil CommunityUtil;
+        private ICommunityLookup CommunityUtil;
         private CompatibilityUtil CompatibilityUtil;
 
-        public DiscoverService(ProfileRepository profileRepo, InteractionRepository interactionRepo, MockCommunityUtil communityUtil, CompatibilityUtil compatibilityUtil) { 
+        public DiscoverService(ProfileRepository profileRepo, InteractionRepository interactionRepo, ICommunityLookup communityUtil, CompatibilityUtil compatibilityUtil) { 
             ProfileRepo = profileRepo;
             InteractionRepo = interactionRepo;
             CommunityUtil = communityUtil;

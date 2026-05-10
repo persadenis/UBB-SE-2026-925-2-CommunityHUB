@@ -37,7 +37,8 @@ namespace matchmaking.Views
                 ViewModel.ProfileCreated += OnProfileCreated;
                 ViewModel.ErrorOccurred += OnErrorOccurred;
                 ViewModel.LoadUserData(ViewModel.UserId);
-                AgeText.Text = GetAge().ToString();
+                BirthDatePicker.Date = new DateTimeOffset(ViewModel.BirthDate);
+                AgeText.Text = ViewModel.Age.ToString();
                 LoadLocations();
                 LoadInterests();
                 UpdatePhotoSlots();
@@ -97,15 +98,6 @@ namespace matchmaking.Views
                 CloseButtonText = "OK",
                 XamlRoot = XamlRoot
             }.ShowAsync();
-        }
-
-        private int GetAge()
-        {
-            MockUserUtil userUtil = new MockUserUtil();
-            DateTime birthDate = userUtil.GetUserData(ViewModel!.UserId).Birthdate;
-            int age = DateTime.Now.Year - birthDate.Year;
-            if (DateTime.Now < birthDate.AddYears(age)) age--;
-            return age;
         }
 
         private void SyncViewModeltoUI()
@@ -172,6 +164,7 @@ namespace matchmaking.Views
 
         private bool IsStep1Valid() =>
             !string.IsNullOrWhiteSpace(ViewModel!.Name) &&
+            ViewModel.Age >= 18 &&
             !string.IsNullOrWhiteSpace(ViewModel.Location) &&
             !string.IsNullOrWhiteSpace(ViewModel.Nationality) &&
             ViewModel.GenderIndex >= 0 &&
@@ -179,6 +172,18 @@ namespace matchmaking.Views
              PrefFemaleCheckBox.IsChecked == true ||
              PrefNonBinaryCheckBox.IsChecked == true ||
              PrefOtherCheckBox.IsChecked == true);
+
+        private void BirthDatePicker_DateChanged(object sender, DatePickerValueChangedEventArgs args)
+        {
+            if (ViewModel == null)
+            {
+                return;
+            }
+
+            ViewModel.BirthDate = ((DatePicker)sender).Date.DateTime;
+            AgeText.Text = ViewModel.Age.ToString();
+            UpdateNextButton();
+        }
 
         private bool IsStep2Valid() => ViewModel!.ProfileData!.Photos.Count >= 2;
 

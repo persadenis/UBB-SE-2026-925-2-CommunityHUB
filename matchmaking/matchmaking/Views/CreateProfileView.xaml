@@ -75,6 +75,12 @@
                         </StackPanel>
 
                         <StackPanel Spacing="6">
+                            <TextBlock Text="Birth Date" Foreground="#333" FontSize="14" FontWeight="SemiBold"/>
+                            <DatePicker x:Name="BirthDatePicker"
+                                        DateChanged="BirthDatePicker_DateChanged"/>
+                        </StackPanel>
+
+                        <StackPanel Spacing="6">
                             <TextBlock Text="Age" Foreground="#333" FontSize="14" FontWeight="SemiBold"/>
                             <TextBlock x:Name="AgeText" Foreground="#555" FontSize="14"/>
                         </StackPanel>
