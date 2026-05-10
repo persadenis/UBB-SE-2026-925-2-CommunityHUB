@@ -87,3 +87,5 @@ weaponized-penguins/
 **/bin/
 **/obj/
 matchmaking/matchmaking/appsettings.Development.json
+
+weaponized-penguins/
