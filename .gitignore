@@ -81,3 +81,9 @@ publish/
 
 ## IIS Express
 iisexpress/
+.dotnet-cli/
+weaponized-penguins/
+.vs/
+**/bin/
+**/obj/
+matchmaking/matchmaking/appsettings.Development.json
